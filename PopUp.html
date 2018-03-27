@@ -1,19 +1,11 @@
 <html>
 <head>
-	<script src="http://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-	<script>
-		function GetIP(){
-			var ipinfo;
-			$.getJSON("http://ipinfo.io",function(data){
-				window.webkitNotifications.createNotification("icon.gif","clicked","IP: "+data.ip+" Country: "+data.country+" Region: "+data.region+ " Postal Code: "+data.postal).show()
-			})
-		}
-
-	</script>
+	<script src="jquery.js"></script>
+	<script src="PopUp.js"></script>
 </head>
 <body>
 	Click to know the Client Ip address of your Computer
-	<input type="button" value="Display My IP!" onclick="GetIP()">
+	<input type="button" value="Display My IP!" id="click-button">
 </body>
 
 </html>

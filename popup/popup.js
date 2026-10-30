@@ -1,11 +1,14 @@
 /**
  * IPTracer Popup Controller
  * Manages responsive UI states, optimistic cached rendering, tab toggling, and data synchronization.
+ * Compatible with Chrome and Firefox.
  */
 
 import { IPService } from '../services/ip-service.js';
 import { StorageService } from '../services/storage-service.js';
 import { TabService } from '../services/tab-service.js';
+
+const extAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 class PopupController {
   constructor() {
@@ -120,8 +123,8 @@ class PopupController {
         watchdogIntervalMinutes: parseInt(this.settingInterval.value, 10)
       };
       await StorageService.saveSettings(updated);
-      if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-        chrome.runtime.sendMessage({ action: 'UPDATE_SETTINGS', settings: updated });
+      if (extAPI && extAPI.runtime?.sendMessage) {
+        extAPI.runtime.sendMessage({ action: 'UPDATE_SETTINGS', settings: updated });
       }
     };
 

@@ -1,6 +1,7 @@
 /**
  * Storage Service for IPTracer
- * Manages local storage persistence for IP caching, historical changes, and user preferences.
+ * Cross-browser local storage persistence for IP caching, historical changes, and user preferences.
+ * Compatible with Chrome, Firefox, Edge, and Safari (Manifest V3).
  */
 
 const DEFAULT_SETTINGS = {
@@ -14,13 +15,18 @@ const MAX_HISTORY_ITEMS = 10;
 
 export class StorageService {
   /**
-   * Safe getter for chrome.storage.local with mock fallback for testing
+   * Safe getter for browser/chrome storage.local with in-memory fallback for testing
    */
   static getStorageArea() {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      return chrome.storage.local;
+    const extAPI = (typeof browser !== 'undefined' && browser.storage)
+      ? browser
+      : (typeof chrome !== 'undefined' && chrome.storage ? chrome : null);
+
+    if (extAPI && extAPI.storage && extAPI.storage.local) {
+      return extAPI.storage.local;
     }
-    // In-memory fallback if outside chrome extension context (e.g. Node tests)
+
+    // In-memory fallback if outside extension context (e.g. Node tests)
     if (!globalThis.__mockStorage) {
       globalThis.__mockStorage = {};
     }
@@ -118,7 +124,6 @@ export class StorageService {
    */
   static async addHistoryEntry(entry) {
     const history = await this.getHistory();
-    // Prepend newest entry, deduplicate immediate previous
     if (history.length > 0 && history[0].ip === entry.ip) {
       return history;
     }

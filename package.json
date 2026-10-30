@@ -1,14 +1,16 @@
 {
   "name": "iptracer-extension",
   "version": "2.0.0",
-  "description": "Modern Manifest V3 Chrome Extension for real-time IP tracing, geolocation, ASN intelligence, and VPN watchdog.",
+  "description": "Modern Manifest V3 Cross-Browser Extension (Chrome & Firefox) for real-time IP tracing, geolocation, ASN intelligence, and VPN watchdog.",
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "generate-icons": "node scripts/generate-icons.js"
+    "generate-icons": "node scripts/generate-icons.js",
+    "package": "node scripts/package-extension.js"
   },
   "keywords": [
     "chrome-extension",
+    "firefox-addon",
     "manifest-v3",
     "ip-tracer",
     "geolocation",

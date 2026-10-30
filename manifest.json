@@ -21,6 +21,9 @@
   },
   "background": {
     "service_worker": "background/service-worker.js",
+    "scripts": [
+      "background/service-worker.js"
+    ],
     "type": "module"
   },
   "permissions": [
@@ -34,5 +37,11 @@
     "https://ipinfo.io/*",
     "https://api.ipify.org/*",
     "https://cloudflare-dns.com/*"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "iptracer@extension.local",
+      "strict_min_version": "109.0"
+    }
+  }
 }

@@ -1,20 +1,36 @@
 /**
  * Tab Service for IPTracer
  * Resolves the active tab's domain and fetches the remote server's IP via DNS-over-HTTPS (DoH).
+ * Compatible with Chrome, Firefox, Edge, and Safari.
  */
 
 import { IPService } from './ip-service.js';
 
 export class TabService {
   /**
+   * Safe getter for cross-browser WebExtensions API
+   */
+  static getExtensionAPI() {
+    return (typeof browser !== 'undefined' && browser.tabs)
+      ? browser
+      : (typeof chrome !== 'undefined' && chrome.tabs ? chrome : null);
+  }
+
+  /**
    * Get the active tab in the current window
    */
   static async getActiveTab() {
-    if (typeof chrome === 'undefined' || !chrome.tabs || !chrome.tabs.query) {
+    const extAPI = this.getExtensionAPI();
+    if (!extAPI || !extAPI.tabs || !extAPI.tabs.query) {
       return null;
     }
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    return tab || null;
+    try {
+      const [tab] = await extAPI.tabs.query({ active: true, currentWindow: true });
+      return tab || null;
+    } catch (e) {
+      console.warn('[IPTracer] tabs.query failed:', e);
+      return null;
+    }
   }
 
   /**
@@ -26,7 +42,7 @@ export class TabService {
     try {
       const url = new URL(urlString);
       // Filter out internal browser protocol schemes
-      if (['chrome:', 'edge:', 'about:', 'chrome-extension:', 'file:', 'brave:'].includes(url.protocol)) {
+      if (['chrome:', 'edge:', 'about:', 'chrome-extension:', 'moz-extension:', 'file:', 'brave:'].includes(url.protocol)) {
         return { isInternal: true, protocol: url.protocol, hostname: url.hostname || url.protocol };
       }
       return { isInternal: false, protocol: url.protocol, hostname: url.hostname };

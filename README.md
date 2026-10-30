@@ -93,6 +93,43 @@ IPTracer_extension/
 
 ---
 
+## 🚀 How to Use & See It in Action
+
+### 1. Pin IPTracer to Your Toolbar
+Keep IPTracer visible for instant network status:
+- **Chrome / Brave / Edge**: Click the **puzzle piece icon (`🧩`)** in the top-right $\rightarrow$ click the **Pin (`📌`)** next to IPTracer.
+- **Firefox**: Click the **puzzle piece icon (`🧩`)** $\rightarrow$ right-click **IPTracer** (or click the gear `⚙️`) $\rightarrow$ select **Pin to Toolbar**.
+
+> 💡 **Country Code Badge**: Once loaded, IPTracer automatically displays a badge on the toolbar icon showing your current country code (e.g., `US`, `GB`, `IN`, `DE`).
+
+### 2. Inspect Any Website in Real-Time
+1. Open any website in your browser (e.g., `https://github.com`, `https://wikipedia.org`, or `https://cloudflare.com`).
+2. Click the **IPTracer icon** in the toolbar to open the dashboard.
+3. Switch between the two tabs at the top:
+
+#### Perspective A: "My Client IP"
+- **Your Public IP**: Displays your public IPv4 or IPv6 address.
+- **Latency**: Measures round-trip ping time in milliseconds (e.g., `⚡ 28ms`).
+- **Location & ISP**: Shows country flag, city, region, organization, and Autonomous System Number (ASN).
+- **Actions**: Click **Copy** to copy your IP or **Map Preview** to open OpenStreetMap coordinates.
+
+#### Perspective B: "Active Tab Host"
+- **Server Domain**: Automatically extracts the domain from your active tab (e.g., `github.com`).
+- **Resolved Server IP**: Resolves the hosting server's public IP using encrypted DNS-over-HTTPS (DoH).
+- **Hosting Provider & Datacenter**: Discloses who hosts the site (e.g., `Fastly`, `Cloudflare`, `AWS`) and where that physical datacenter is located.
+- **Actions**: Click **Copy** to copy the website server's IP address.
+
+### 3. Background VPN Drop Watchdog
+1. Connect or disconnect from your VPN.
+2. The background sentinel will detect the egress IP shift.
+3. You will receive an instant desktop alert:
+   > **IPTracer: IP Address Changed**  
+   > *Egress IP changed: 198.51.100.22 (United States) ➔ 203.0.113.45 (India)*
+4. The toolbar country badge will immediately update.
+5. Expand **IP Transition History** in the popup to review a timestamped log of your network changes.
+
+---
+
 ## 🌐 Cross-Browser Architecture (Chrome & Firefox)
 
 Modern browsers differ slightly in their Manifest V3 background script implementations:
@@ -114,17 +151,6 @@ IPTracer achieves 100% universal compatibility by configuring both targets in [`
   }
 }
 ```
-
----
-
-## 📦 Building Distribution Packages
-
-To generate a distribution ZIP bundle ready for upload to the **Chrome Web Store** and **Firefox Add-ons (AMO)**:
-
-```bash
-npm run package
-```
-This generates `dist/iptracer-v2.0.0.zip`.
 
 ---
 

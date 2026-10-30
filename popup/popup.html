@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPTracer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-radar">
+          <span class="radar-ping"></span>
+          <span class="radar-dot"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">IPTracer</span>
+          <span class="brand-badge" id="network-status">ONLINE</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-theme" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button id="btn-refresh" class="icon-btn" title="Refresh IP Data" aria-label="Refresh">
+          <svg id="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        </button>
+        <button id="btn-settings" class="icon-btn" title="Settings" aria-label="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Perspective Navigation Tabs -->
+    <nav class="perspective-nav">
+      <button id="nav-client" class="nav-tab active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span>My Client IP</span>
+      </button>
+      <button id="nav-tab" class="nav-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Active Tab Host</span>
+      </button>
+    </nav>
+
+    <!-- Settings Drawer (Hidden by default) -->
+    <section id="settings-panel" class="settings-drawer hidden">
+      <div class="settings-header">
+        <h3>Sentinel & Preferences</h3>
+        <button id="btn-close-settings" class="close-btn">&times;</button>
+      </div>
+      <div class="setting-item">
+        <label for="setting-watchdog">VPN Drop / IP Change Watchdog</label>
+        <input type="checkbox" id="setting-watchdog" checked>
+      </div>
+      <div class="setting-item">
+        <label for="setting-badge">Show Country Badge on Toolbar</label>
+        <input type="checkbox" id="setting-badge" checked>
+      </div>
+      <div class="setting-item">
+        <label for="setting-interval">Check Frequency</label>
+        <select id="setting-interval">
+          <option value="1">Every 1 minute</option>
+          <option value="5" selected>Every 5 minutes</option>
+          <option value="15">Every 15 minutes</option>
+          <option value="30">Every 30 minutes</option>
+        </select>
+      </div>
+      <div class="settings-footer">
+        <button id="btn-clear-history" class="btn btn-secondary-sm">Clear IP History</button>
+      </div>
+    </section>
+
+    <!-- Main View Content -->
+    <main class="content-body">
+      <!-- Loading State -->
+      <div id="loading-state" class="state-container hidden">
+        <div class="spinner"></div>
+        <p class="state-text">Scanning network topology...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="state-container hidden">
+        <div class="error-icon">⚠️</div>
+        <p id="error-message" class="state-text">Network lookup failed.</p>
+        <button id="btn-retry" class="btn btn-primary-sm">Retry Scan</button>
+      </div>
+
+      <!-- View 1: Client IP -->
+      <div id="view-client" class="view-panel">
+        <!-- Hero IP Card -->
+        <div class="hero-card">
+          <div class="hero-meta">
+            <span class="chip chip-version" id="client-version">IPv4</span>
+            <span class="chip chip-latency" id="client-latency">-- ms</span>
+          </div>
+          <div class="hero-ip-row">
+            <span class="hero-ip" id="client-ip">0.0.0.0</span>
+            <button id="btn-copy-ip" class="copy-btn" title="Copy IP Address" aria-label="Copy IP">
+              <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copy-label">Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Telemetry Data Grid -->
+        <div class="telemetry-grid">
+          <div class="telemetry-card">
+            <span class="card-label">Location</span>
+            <div class="card-val" id="client-location">
+              <span id="client-flag" class="flag-icon">🌐</span>
+              <span id="client-city-country">Detecting location...</span>
+            </div>
+          </div>
+
+          <div class="telemetry-card">
+            <span class="card-label">ISP & Organization</span>
+            <div class="card-val truncate" id="client-isp">Detecting provider...</div>
+          </div>
+
+          <div class="telemetry-card">
+            <span class="card-label">Autonomous System (ASN)</span>
+            <div class="card-val font-mono" id="client-asn">Detecting ASN...</div>
+          </div>
+
+          <div class="telemetry-card">
+            <span class="card-label">Timezone & Postal</span>
+            <div class="card-val" id="client-timezone">Detecting timezone...</div>
+          </div>
+
+          <div class="telemetry-card full-span">
+            <div class="coords-row">
+              <div>
+                <span class="card-label">Coordinates</span>
+                <span class="card-val font-mono" id="client-coords">-- , --</span>
+              </div>
+              <a id="client-map-link" href="#" target="_blank" class="map-link-btn" title="Open in Map">
+                <span>Map Preview</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Accordion -->
+        <div class="accordion-section">
+          <button id="btn-toggle-history" class="accordion-header">
+            <span>IP Transition History</span>
+            <svg id="history-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="history-container" class="accordion-content hidden">
+            <div id="history-list" class="history-list">
+              <div class="empty-history">No IP changes recorded yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 2: Active Tab Host IP -->
+      <div id="view-tab" class="view-panel hidden">
+        <div id="tab-internal-warning" class="notice-card hidden">
+          <span class="notice-icon">ℹ️</span>
+          <span id="tab-warning-text">Internal browser page (no public IP).</span>
+        </div>
+
+        <div id="tab-host-content">
+          <!-- Active Website Domain Header -->
+          <div class="tab-host-header">
+            <span class="tab-domain-title" id="tab-domain-name">website.com</span>
+            <span class="chip chip-dns" id="tab-dns-type">DNS A</span>
+          </div>
+
+          <!-- Hero IP Card for Tab -->
+          <div class="hero-card">
+            <div class="hero-meta">
+              <span class="chip chip-version" id="tab-ip-version">Server IP</span>
+              <span class="chip chip-latency" id="tab-latency">-- ms</span>
+            </div>
+            <div class="hero-ip-row">
+              <span class="hero-ip" id="tab-ip">0.0.0.0</span>
+              <button id="btn-copy-tab-ip" class="copy-btn" title="Copy Server IP">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copy-tab-label">Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Telemetry Data Grid -->
+          <div class="telemetry-grid">
+            <div class="telemetry-card">
+              <span class="card-label">Server Location</span>
+              <div class="card-val" id="tab-location">
+                <span id="tab-flag" class="flag-icon">🌐</span>
+                <span id="tab-city-country">Detecting location...</span>
+              </div>
+            </div>
+
+            <div class="telemetry-card">
+              <span class="card-label">Server Host / CDN</span>
+              <div class="card-val truncate" id="tab-isp">Detecting host...</div>
+            </div>
+
+            <div class="telemetry-card">
+              <span class="card-label">Server ASN</span>
+              <div class="card-val font-mono" id="tab-asn">Detecting ASN...</div>
+            </div>
+
+            <div class="telemetry-card">
+              <span class="card-label">Timezone</span>
+              <div class="card-val" id="tab-timezone">Detecting timezone...</div>
+            </div>
+
+            <div class="telemetry-card full-span">
+              <div class="coords-row">
+                <div>
+                  <span class="card-label">Server Coordinates</span>
+                  <span class="card-val font-mono" id="tab-coords">-- , --</span>
+                </div>
+                <a id="tab-map-link" href="#" target="_blank" class="map-link-btn" title="Open in Map">
+                  <span>Map Preview</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Status -->
+    <footer class="app-footer">
+      <span id="footer-timestamp">Checked: Just now</span>
+      <span class="footer-provider" id="footer-provider">ipapi.co</span>
+    </footer>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

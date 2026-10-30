@@ -1,13 +1,38 @@
 {
-	"name":"IP tracker",
-	"version": "1.0",
-	"description" :"Traces IP",
-	"permissions": ["notifications","geolocation"],
-	"background": "background.html",
-	"browser_action":{
-		"default_popup": "PopUp.html",
-		"default_icon": "icon.gif"
-	} ,
-
-	"manifest_version": 2
+  "manifest_version": 3,
+  "name": "IPTracer - Modern IP & Network Inspector",
+  "version": "2.0.0",
+  "description": "Real-time client IP, geolocation, ISP/ASN telemetry, active tab domain tracing, and VPN drop monitoring.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "IPTracer - Network Inspector",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://ipapi.co/*",
+    "https://ipinfo.io/*",
+    "https://api.ipify.org/*",
+    "https://cloudflare-dns.com/*"
+  ]
 }

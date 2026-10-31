@@ -136,7 +136,6 @@ function collectFiles(baseDir, relativePrefix = '') {
 }
 
 const filesToInclude = [
-  'manifest.json',
   'icons',
   'background',
   'popup',
@@ -144,17 +143,17 @@ const filesToInclude = [
   'README.md'
 ];
 
-console.log('Packaging extension with forward-slash (/) standard archive format...');
+console.log('📦 Collecting shared extension files (using forward-slash standard paths)...');
 
-const filesInArchive = [];
+const sharedFiles = [];
 for (const item of filesToInclude) {
   const itemPath = path.join(rootDir, item);
   if (fs.existsSync(itemPath)) {
     const stat = fs.statSync(itemPath);
     if (stat.isDirectory()) {
-      filesInArchive.push(...collectFiles(itemPath, item));
+      sharedFiles.push(...collectFiles(itemPath, item));
     } else {
-      filesInArchive.push({
+      sharedFiles.push({
         path: item.replace(/\\/g, '/'),
         data: fs.readFileSync(itemPath)
       });
@@ -162,11 +161,81 @@ for (const item of filesToInclude) {
   }
 }
 
-console.log(`Collected ${filesInArchive.length} files:`);
-filesInArchive.forEach(f => console.log(`  ${f.path}`));
+console.log(`Collected ${sharedFiles.length} shared assets/source files.`);
 
-const zipBuffer = createStandardZip(filesInArchive);
-const zipPath = path.join(distDir, 'iptracer-v2.0.0.zip');
-fs.writeFileSync(zipPath, zipBuffer);
+// Read root manifest.json
+const rawManifest = fs.readFileSync(path.join(rootDir, 'manifest.json'), 'utf8');
+const baseManifest = JSON.parse(rawManifest);
 
-console.log(`\n✅ Created standard ZIP archive: ${zipPath} (${zipBuffer.length} bytes)`);
+/**
+ * Build target: Edge & Chromium
+ * Strict MV3: background.service_worker only, no background.scripts, no browser_specific_settings.
+ */
+const edgeManifest = JSON.parse(JSON.stringify(baseManifest));
+edgeManifest.background = {
+  service_worker: 'background/service-worker.js',
+  type: 'module'
+};
+delete edgeManifest.browser_specific_settings;
+
+/**
+ * Build target: Firefox AMO & Firefox Android
+ * Gecko MV3: background.scripts array, with browser_specific_settings for Gecko & Android.
+ */
+const firefoxManifest = JSON.parse(JSON.stringify(baseManifest));
+firefoxManifest.background = {
+  scripts: ['background/service-worker.js'],
+  type: 'module'
+};
+firefoxManifest.browser_specific_settings = baseManifest.browser_specific_settings || {
+  gecko: {
+    id: 'iptracer@extension.local',
+    strict_min_version: '140.0',
+    data_collection_permissions: {
+      required: ['none']
+    }
+  },
+  gecko_android: {
+    strict_min_version: '142.0'
+  }
+};
+
+const builds = [
+  {
+    name: 'Microsoft Edge & Universal Chromium',
+    filename: 'iptracer-edge.zip',
+    manifest: edgeManifest
+  },
+  {
+    name: 'Google Chrome Web Store',
+    filename: 'iptracer-chrome.zip',
+    manifest: edgeManifest
+  },
+  {
+    name: 'Mozilla Firefox AMO (Desktop & Android)',
+    filename: 'iptracer-firefox.zip',
+    manifest: firefoxManifest
+  },
+  {
+    name: 'Standard Release (v2.0.0 Edge/Chromium compatible)',
+    filename: 'iptracer-v2.0.0.zip',
+    manifest: edgeManifest
+  }
+];
+
+console.log('\n🚀 Packaging browser-specific release distributions...\n');
+
+for (const build of builds) {
+  const manifestBuf = Buffer.from(JSON.stringify(build.manifest, null, 2), 'utf8');
+  const filesForBuild = [
+    { path: 'manifest.json', data: manifestBuf },
+    ...sharedFiles
+  ];
+
+  const zipBuffer = createStandardZip(filesForBuild);
+  const outPath = path.join(distDir, build.filename);
+  fs.writeFileSync(outPath, zipBuffer);
+  console.log(`✅ [${build.name}] -> dist/${build.filename} (${zipBuffer.length} bytes, ${filesForBuild.length} files)`);
+}
+
+console.log('\n✨ All distribution archives built successfully!');

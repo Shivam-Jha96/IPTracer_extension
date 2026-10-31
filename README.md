@@ -1,10 +1,11 @@
 # IPTracer 🌐⚡
 
-> **A high-performance, privacy-focused Cross-Browser & Cross-Platform Extension (Chrome, Firefox, Edge, Android & iOS) for real-time client IP tracing, geolocation telemetry, active tab domain resolution, and background VPN drop monitoring.**
+> **A high-performance, privacy-focused Cross-Browser & Cross-Platform Extension (Microsoft Edge, Google Chrome, Mozilla Firefox, Android & iOS) for real-time client IP tracing, geolocation telemetry, active tab domain resolution, and background VPN drop monitoring.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Manifest](https://img.shields.io/badge/manifest-v3-success.svg)
-![Platform Support](https://img.shields.io/badge/platforms-Chrome%20%7C%20Firefox%20%7C%20Edge%20%7C%20Android%20%7C%20iOS-orange.svg)
+![Platform Support](https://img.shields.io/badge/platforms-Edge%20%7C%20Chrome%20%7C%20Firefox%20%7C%20Android%20%7C%20iOS-orange.svg)
+![Edge Ready](https://img.shields.io/badge/Microsoft%20Edge-Partner%20Center%20Ready-0078D7.svg?logo=microsoftedge&logoColor=white)
 ![Dependencies](https://img.shields.io/badge/dependencies-0%20runtime-emerald.svg)
 ![Tests](https://img.shields.io/badge/tests-7%20passing-brightgreen.svg)
 
@@ -28,8 +29,9 @@
   - Sleek, high-contrast dashboard with automatic system dark/light theme support and responsive mobile adaptation.
   - Crisp typography with monospace accents for IP addresses and network codes.
 - 📱 **Universal Desktop & Mobile Compatibility**:
-  - Runs on **Desktop** (Chrome, Firefox, Microsoft Edge, Brave) and **Mobile** (Firefox for Android, Orion on iOS, and Safari on iOS/iPadOS).
-  - Seamlessly handles Chrome's Service Worker runtime and Firefox's Gecko event page runtime via unified manifest declarations.
+  - Runs natively on **Desktop** (Microsoft Edge, Google Chrome, Mozilla Firefox, Brave, Opera).
+  - Runs on **Mobile** (Firefox for Android, Orion on iOS, and Safari on iOS/iPadOS).
+  - Dedicated build profiles for **Microsoft Edge Add-ons**, **Chrome Web Store**, and **Mozilla Add-ons (AMO)**.
 - 🚀 **Zero Runtime Dependencies**:
   - Pure native ES2024+ (`fetch`, `async/await`, CSS Grid, native `navigator.clipboard`).
   - Total bundle size is under 40 KB (eliminates obsolete 87 KB jQuery library).
@@ -40,9 +42,10 @@
 
 ```
 IPTracer_extension/
-├── manifest.json              # Cross-browser Manifest V3 (Chrome + Firefox)
+├── manifest.json              # Universal Manifest V3 base configuration
 ├── package.json               # Developer scripts and native test configuration
 ├── CHROMEWEBSTORE.md          # Web Store listing metadata & privacy justifications
+├── PRIVACY.md                 # Store-compliant Privacy Policy for Edge, Chrome & Firefox
 ├── README.md                  # Project documentation & usage instructions
 ├── icons/                     # Standardized crisp PNG extension icons
 │   ├── icon-16.png            # 16x16 Toolbar & favicon
@@ -61,7 +64,7 @@ IPTracer_extension/
 │   └── tab-service.js         # Active tab URL extractor & Cloudflare DoH resolver
 ├── scripts/
 │   ├── generate-icons.js      # Zero-dependency procedural PNG icon generator
-│   └── package-extension.js   # Universal ZIP packager for Chrome & Firefox
+│   └── package-extension.js   # Multi-target ZIP packager for Edge, Chrome & Firefox
 └── test/
     └── ip-service.test.js     # Automated unit tests using Node.js native test runner
 ```
@@ -70,27 +73,37 @@ IPTracer_extension/
 
 ## 🛠️ Installation & Setup
 
-### 1. Load in Google Chrome, Microsoft Edge & Chromium Browsers
+### 1. Microsoft Edge (Desktop)
 
-1. Clone or download this repository.
-2. Open your browser's extensions page:
-   - **Google Chrome / Brave**: `chrome://extensions`
-   - **Microsoft Edge**: `edge://extensions`
-3. Enable **Developer mode** toggle in the top-right corner (or left sidebar in Edge).
-4. Click **Load unpacked** and select the `IPTracer_extension` folder.
-5. The IPTracer icon will appear in your browser toolbar. Pin it for quick access!
+1. Open Microsoft Edge and navigate to:
+   ```
+   edge://extensions
+   ```
+2. Enable the **Developer mode** toggle in the left sidebar.
+3. Click **Load unpacked** and select the `IPTracer_extension` folder.
+   *(Alternatively, unpack and load the store-ready `dist/iptracer-edge.zip` archive).*
+4. Click the puzzle piece (`🧩`) icon in Edge's toolbar and toggle **Show in toolbar** (`👁️`) next to IPTracer to pin it.
 
-### 2. Load in Mozilla Firefox (Desktop)
+### 2. Google Chrome & Chromium Browsers (Brave, Opera, Vivaldi)
+
+1. Open your browser's extensions page:
+   - **Google Chrome**: `chrome://extensions`
+   - **Brave**: `brave://extensions`
+2. Enable **Developer mode** toggle in the top-right corner.
+3. Click **Load unpacked** and select the `IPTracer_extension` folder (or unpacked `dist/iptracer-chrome.zip`).
+4. Pin the IPTracer icon to your toolbar for instant access.
+
+### 3. Mozilla Firefox (Desktop)
 
 1. Open Firefox and navigate to:
    ```
    about:debugging#/runtime/this-firefox
    ```
 2. Click **Load Temporary Add-on...**
-3. Select `manifest.json` inside the `IPTracer_extension` folder.
-4. IPTracer will be loaded immediately with full Manifest V3 compatibility.
+3. Select `manifest.json` inside the `IPTracer_extension` folder (or within `dist/iptracer-firefox.zip`).
+4. IPTracer will load immediately with Gecko Manifest V3 support.
 
-### 3. Load on Android (Firefox for Android)
+### 4. Android (Firefox for Android)
 
 1. **Via Mozilla Add-ons (AMO)**: Once published, users on Firefox for Android can install IPTracer directly from the AMO listing page with one tap.
 2. **Local Testing on Android**:
@@ -98,10 +111,10 @@ IPTracer_extension/
    - Go to **Settings** $\rightarrow$ **About Firefox** $\rightarrow$ Tap the Firefox logo 5 times to enable developer tools.
    - Under **Custom Add-on collection**, enter your collection ID containing IPTracer.
 
-### 4. Load on iOS / iPadOS
+### 5. iOS / iPadOS
 
 Mobile iOS browsers run extensions through two official methods:
-- **Option A — Orion Browser on iOS (Direct)**: Install the [Orion Browser](https://browser.kagi.com/) from the App Store. Orion supports Chrome and Firefox extensions natively on iOS. Download `iptracer-v2.0.0.zip` or open its AMO/Chrome Web Store link in Orion to install with one click.
+- **Option A — Orion Browser on iOS (Direct)**: Install the [Orion Browser](https://browser.kagi.com/) from the App Store. Orion natively supports Chrome, Edge, and Firefox extensions on iOS. Download `iptracer-edge.zip` or open the store listing in Orion to install with one tap.
 - **Option B — Apple Safari Web Extension (App Store)**: Convert the extension into a native iOS Safari App using Apple's official converter on macOS:
   ```bash
   xcrun safari-web-extension-converter /path/to/IPTracer_extension --ios-only
@@ -114,8 +127,9 @@ Mobile iOS browsers run extensions through two official methods:
 
 ### 1. Pin IPTracer to Your Toolbar
 Keep IPTracer visible for instant network status:
-- **Chrome / Brave / Edge**: Click the **puzzle piece icon (`🧩`)** in the top-right $\rightarrow$ click the **Pin (`📌`)** next to IPTracer.
-- **Firefox**: Click the **puzzle piece icon (`🧩`)** $\rightarrow$ right-click **IPTracer** (or click the gear `⚙️`) $\rightarrow$ select **Pin to Toolbar**.
+- **Microsoft Edge**: Click the **Extensions (`🧩`)** menu $\rightarrow$ click **Show in toolbar** (`👁️`) next to IPTracer.
+- **Chrome / Brave**: Click the **Extensions (`🧩`)** menu $\rightarrow$ click the **Pin (`📌`)** next to IPTracer.
+- **Firefox**: Click the **Extensions (`🧩`)** menu $\rightarrow$ right-click **IPTracer** (or click the gear `⚙️`) $\rightarrow$ select **Pin to Toolbar**.
 
 > 💡 **Country Code Badge**: Once loaded, IPTracer automatically displays a badge on the toolbar icon showing your current country code (e.g., `US`, `GB`, `IN`, `DE`).
 
@@ -147,33 +161,45 @@ Keep IPTracer visible for instant network status:
 
 ---
 
-## 🌐 Cross-Browser Architecture (Chrome & Firefox)
+## 🌐 Cross-Browser & Multi-Target Architecture
 
-Modern browsers differ slightly in their Manifest V3 background script implementations:
-- **Chromium (Chrome, Edge, Brave)** uses `background.service_worker`.
-- **Gecko (Firefox)** uses `background.scripts` with `"type": "module"`.
+Modern browser engines differ in their Manifest V3 background script implementations and store ingestion validation rules:
 
-IPTracer achieves 100% universal compatibility by configuring both targets in [`manifest.json`](manifest.json) alongside an API abstraction layer (`globalThis.browser || globalThis.chrome`):
+| Target / Store | Background Type | `browser_specific_settings` | Package Output |
+|---|---|---|---|
+| **Microsoft Edge** (Partner Center) | `service_worker` (`type: module`) | ❌ Strict MV3 (Disallowed) | `dist/iptracer-edge.zip` |
+| **Google Chrome** (Chrome Web Store) | `service_worker` (`type: module`) | Optional | `dist/iptracer-chrome.zip` |
+| **Mozilla Firefox** (AMO & Android) | `scripts: [...]` (`type: module`) | ✅ Required (`gecko`, `gecko_android`) | `dist/iptracer-firefox.zip` |
+| **Universal Release** (GitHub Releases) | `service_worker` (`type: module`) | Removed for Chromium safety | `dist/iptracer-v2.0.0.zip` |
 
-```json
-"background": {
-  "service_worker": "background/service-worker.js",
-  "scripts": ["background/service-worker.js"],
-  "type": "module"
-},
-"browser_specific_settings": {
-  "gecko": {
-    "id": "iptracer@extension.local",
-    "strict_min_version": "109.0"
-  }
-}
+### Automated Multi-Target Packaging
+
+Build all store-tailored release packages with one command:
+```bash
+npm run package
+```
+
+The packaging pipeline (`scripts/package-extension.js`):
+1. **Normalizes file paths** to standard forward-slashes (`/`), preventing ZIP header validation errors on Windows.
+2. **Generates Microsoft Edge compliant manifests**: Enforces pure `service_worker` background and strips `browser_specific_settings` to prevent Edge Partner Center ingest errors.
+3. **Generates Mozilla Firefox AMO compliant manifests**: Transforms the background entry to Gecko's `scripts` array and injects mandatory `data_collection_permissions` declarations.
+4. **Builds four discrete ZIP distributions** in `dist/` ready for developer store upload and release deployment.
+
+### Unified Runtime API Abstraction
+
+All code components utilize an adaptive API abstraction layer (`globalThis.browser || globalThis.chrome`) ensuring seamless execution across Edge, Chrome, and Firefox without polyfills:
+
+```javascript
+// Cross-browser storage abstraction
+const browserAPI = globalThis.browser || globalThis.chrome;
+await browserAPI.storage.local.set({ [key]: value });
 ```
 
 ---
 
 ## 🧪 Running Automated Tests
 
-Run the built-in test suite (requires Node.js 18+; no npm packages required):
+Run the built-in test suite (requires Node.js 18+; zero external test frameworks needed):
 
 ```bash
 npm test
@@ -192,18 +218,20 @@ Expected output:
 ℹ pass 7
 ```
 
-To re-generate PNG icons:
+To re-generate icons or rebuild distribution packages:
 ```bash
 npm run generate-icons
+npm run package
 ```
 
 ---
 
 ## 🔒 Security & Privacy
 
+- **Store-Compliant Privacy Policy**: Fully documented in [PRIVACY.md](PRIVACY.md), compliant with the Microsoft Edge Partner Center Developer Agreement, Google Chrome Web Store Developer Program Policies, and Mozilla Add-on Policies.
 - **Encrypted Transport**: All API requests utilize HTTPS endpoints (`ipapi.co`, `ipinfo.io`, `api.ipify.org`, `cloudflare-dns.com`).
-- **No Data Harvesting**: No cookies, credentials, or personal telemetry are ever transmitted or stored on external servers.
-- **Strict Content Security Policy**: Zero inline scripts; fully complies with Chrome and Firefox Manifest V3 requirements.
+- **No Data Harvesting**: No cookies, credentials, browsing history, or personal telemetry are collected, tracked, or transmitted off-device.
+- **Strict Content Security Policy**: Zero inline scripts; fully complies with Manifest V3 security standards.
 
 ---
 

@@ -171,26 +171,46 @@ class PopupController {
 
   async renderHistory() {
     const history = await StorageService.getHistory();
+    this.historyList.replaceChildren();
+
     if (!history || history.length === 0) {
-      this.historyList.innerHTML = '<div class="empty-history">No IP changes recorded yet.</div>';
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'empty-history';
+      emptyDiv.textContent = 'No IP changes recorded yet.';
+      this.historyList.appendChild(emptyDiv);
       return;
     }
 
-    this.historyList.innerHTML = history.map(item => {
+    for (const item of history) {
       const flag = IPService.getCountryFlagEmoji(item.country_code);
       const timeStr = new Date(item.timestamp).toLocaleString(undefined, {
         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
       });
-      return `
-        <div class="history-item">
-          <div>
-            <span class="history-item-ip">${item.ip}</span>
-            <span class="history-item-meta">${flag} ${item.city}, ${item.country}</span>
-          </div>
-          <span class="history-item-meta">${timeStr}</span>
-        </div>
-      `;
-    }).join('');
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'history-item';
+
+      const detailsDiv = document.createElement('div');
+      const ipSpan = document.createElement('span');
+      ipSpan.className = 'history-item-ip';
+      ipSpan.textContent = item.ip;
+
+      const metaSpan = document.createElement('span');
+      metaSpan.className = 'history-item-meta';
+      metaSpan.textContent = ` ${flag} ${item.city}, ${item.country}`;
+
+      detailsDiv.appendChild(ipSpan);
+      detailsDiv.appendChild(metaSpan);
+
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'history-item-meta';
+      timeSpan.textContent = timeStr;
+
+      itemDiv.appendChild(detailsDiv);
+      itemDiv.appendChild(timeSpan);
+
+      this.historyList.appendChild(itemDiv);
+    }
   }
 
   async clearHistory() {

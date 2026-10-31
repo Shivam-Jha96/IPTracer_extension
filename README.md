@@ -1,10 +1,10 @@
 # IPTracer 🌐⚡
 
-> **A high-performance, privacy-focused Cross-Browser Extension (Chrome & Firefox Manifest V3) for real-time client IP tracing, geolocation telemetry, active tab domain resolution, and background VPN drop monitoring.**
+> **A high-performance, privacy-focused Cross-Browser & Cross-Platform Extension (Chrome, Firefox, Edge, Android & iOS) for real-time client IP tracing, geolocation telemetry, active tab domain resolution, and background VPN drop monitoring.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Manifest](https://img.shields.io/badge/manifest-v3-success.svg)
-![Chrome & Firefox](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox%20%7C%20Edge%20%7C%20Brave-orange.svg)
+![Platform Support](https://img.shields.io/badge/platforms-Chrome%20%7C%20Firefox%20%7C%20Edge%20%7C%20Android%20%7C%20iOS-orange.svg)
 ![Dependencies](https://img.shields.io/badge/dependencies-0%20runtime-emerald.svg)
 ![Tests](https://img.shields.io/badge/tests-7%20passing-brightgreen.svg)
 
@@ -25,10 +25,10 @@
 - 🕒 **IP Transition History**:
   - Tracks and deduplicates recent network transitions and location changes locally on device.
 - 🎨 **Modern Cyber / Glassmorphic UI**:
-  - Sleek, high-contrast dashboard with automatic system dark/light theme support.
+  - Sleek, high-contrast dashboard with automatic system dark/light theme support and responsive mobile adaptation.
   - Crisp typography with monospace accents for IP addresses and network codes.
-- 🦊 **Universal Cross-Browser Compatibility**:
-  - Runs natively on **Google Chrome**, **Mozilla Firefox**, **Microsoft Edge**, and **Brave** from the exact same codebase.
+- 📱 **Universal Desktop & Mobile Compatibility**:
+  - Runs on **Desktop** (Chrome, Firefox, Microsoft Edge, Brave) and **Mobile** (Firefox for Android, Orion on iOS, and Safari on iOS/iPadOS).
   - Seamlessly handles Chrome's Service Worker runtime and Firefox's Gecko event page runtime via unified manifest declarations.
 - 🚀 **Zero Runtime Dependencies**:
   - Pure native ES2024+ (`fetch`, `async/await`, CSS Grid, native `navigator.clipboard`).
@@ -70,18 +70,17 @@ IPTracer_extension/
 
 ## 🛠️ Installation & Setup
 
-### 1. Load in Google Chrome / Chromium Browsers
+### 1. Load in Google Chrome, Microsoft Edge & Chromium Browsers
 
 1. Clone or download this repository.
-2. Open Chrome and navigate to:
-   ```
-   chrome://extensions
-   ```
-3. Enable **Developer mode** toggle in the top-right corner.
+2. Open your browser's extensions page:
+   - **Google Chrome / Brave**: `chrome://extensions`
+   - **Microsoft Edge**: `edge://extensions`
+3. Enable **Developer mode** toggle in the top-right corner (or left sidebar in Edge).
 4. Click **Load unpacked** and select the `IPTracer_extension` folder.
-5. The IPTracer icon will appear in your Chrome toolbar. Pin it for quick access!
+5. The IPTracer icon will appear in your browser toolbar. Pin it for quick access!
 
-### 2. Load in Mozilla Firefox
+### 2. Load in Mozilla Firefox (Desktop)
 
 1. Open Firefox and navigate to:
    ```
@@ -90,6 +89,24 @@ IPTracer_extension/
 2. Click **Load Temporary Add-on...**
 3. Select `manifest.json` inside the `IPTracer_extension` folder.
 4. IPTracer will be loaded immediately with full Manifest V3 compatibility.
+
+### 3. Load on Android (Firefox for Android)
+
+1. **Via Mozilla Add-ons (AMO)**: Once published, users on Firefox for Android can install IPTracer directly from the AMO listing page with one tap.
+2. **Local Testing on Android**:
+   - Open Firefox for Android (Nightly/Beta).
+   - Go to **Settings** $\rightarrow$ **About Firefox** $\rightarrow$ Tap the Firefox logo 5 times to enable developer tools.
+   - Under **Custom Add-on collection**, enter your collection ID containing IPTracer.
+
+### 4. Load on iOS / iPadOS
+
+Mobile iOS browsers run extensions through two official methods:
+- **Option A — Orion Browser on iOS (Direct)**: Install the [Orion Browser](https://browser.kagi.com/) from the App Store. Orion supports Chrome and Firefox extensions natively on iOS. Download `iptracer-v2.0.0.zip` or open its AMO/Chrome Web Store link in Orion to install with one click.
+- **Option B — Apple Safari Web Extension (App Store)**: Convert the extension into a native iOS Safari App using Apple's official converter on macOS:
+  ```bash
+  xcrun safari-web-extension-converter /path/to/IPTracer_extension --ios-only
+  ```
+  Open the resulting Xcode project, sign with your Apple Developer Team, and run on your iPhone or submit to the iOS App Store.
 
 ---
 
